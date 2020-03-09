@@ -20,15 +20,54 @@ end
 
 # Active Record related rake tasks
 db_namespace = namespace :db do
-  desc 'create the database'
+  desc 'Create the database'
   task :create do
     puts "Creating #{db_path}..."
     touch db_path
   end
 
-  desc 'drop the database'
+  desc 'Drop the database'
   task :drop do
     puts "Deleting #{db_path}..."
     rm_f db_path
+  end
+
+  desc 'Migrate the database (options: VERSION=x).'
+  task :migrate do
+    require_relative 'utils/utils'
+    Utils.rake_migrate(db_namespace, File.dirname(__FILE__))
+  end
+
+  desc 'Retrieves the current schema version number'
+  task :version do
+    puts "Current version: #{ActiveRecord::Migrator.current_version}"
+  end
+
+  desc 'Populate the database with sample data'
+  task :seed do
+    require "#{__dir__}/db/seeds.rb"
+  end
+
+  desc 'Gives you a timestamp for your migration file name'
+  task :timestamp do
+    puts DateTime.now.strftime('%Y%m%d%H%M%S')
+  end
+
+  namespace :schema do
+    desc 'Create a db/schema.rb file that can be portably used against any DB supported by AR'
+    task :drump do
+      require 'active_record/schema_dumper'
+      filename = 'db/schema.rb'
+
+      File.open(filename, 'w:utf-8') do |file|
+        ActiveRecord::SchemaDumper.dump(ActiveRecprd::Base.connection, file)
+      end
+    end
+  end
+
+  private
+
+  def db_path
+    ActiveRecord::Base.configurations['development']['database']
   end
 end
