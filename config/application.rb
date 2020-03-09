@@ -5,7 +5,7 @@ require 'yaml'
 # DB connection
 config_path = File.join(File.dirname(__FILE__), 'database.yml')
 ActiveRecord::Base.configurations = YAML.load_file(config_path)
-ActiveRecord::Base.estabilish_connection(:development)
+ActiveRecord::Base.establish_connection(:development)
 
 # Set the logger
 logger = Logger.new(STDOUT)
