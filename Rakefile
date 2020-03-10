@@ -8,7 +8,7 @@ task :rubocop do
   sh 'rubocop --format simple || true'
 end
 
-task default: [:rubocop, :spec]
+task default: %i[rubocop spec]
 
 desc 'Open an irb session preloaded with the environment'
 task :console do
@@ -18,32 +18,32 @@ task :console do
   Pry.start
 end
 
-# Active Record related rake tasks
+## Active Record related rake tasks
 db_namespace = namespace :db do
-  desc 'Create the database'
+  desc 'create the database'
   task :create do
     puts "Creating #{db_path}..."
     touch db_path
   end
 
-  desc 'Drop the database'
+  desc 'drop the database'
   task :drop do
     puts "Deleting #{db_path}..."
     rm_f db_path
   end
 
-  desc 'Migrate the database (options: VERSION=x).'
+  desc 'migrate the database (options: VERSION=x).'
   task :migrate do
     require_relative 'utils/utils'
     Utils.rake_migrate(db_namespace, File.dirname(__FILE__))
   end
 
-  desc 'Retrieves the current schema version number'
+  desc 'retrieves the current schema version number'
   task :version do
     puts "Current version: #{ActiveRecord::Migrator.current_version}"
   end
 
-  desc 'Populate the database with sample data'
+  desc 'populate the database with sample data'
   task :seed do
     require "#{__dir__}/db/seeds.rb"
   end
@@ -55,7 +55,7 @@ db_namespace = namespace :db do
 
   namespace :schema do
     desc 'Create a db/schema.rb file that can be portably used against any DB supported by AR'
-    task :drump do
+    task :dump do
       require 'active_record/schema_dumper'
       filename = 'db/schema.rb'
 
