@@ -60,7 +60,7 @@ db_namespace = namespace :db do
       filename = 'db/schema.rb'
 
       File.open(filename, 'w:utf-8') do |file|
-        ActiveRecord::SchemaDumper.dump(ActiveRecprd::Base.connection, file)
+        ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, file)
       end
     end
   end
